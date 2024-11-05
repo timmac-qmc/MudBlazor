@@ -206,6 +206,31 @@ namespace MudBlazor.UnitTests.Components
         }
 
         [Test]
+        public void ScrollToItem_BeforeRender()
+        {
+            var observer = new MockResizeObserver
+            {
+                PanelSize = 100.0,
+                PanelTotalSize = 110,
+            };
+
+            var factory = new MockResizeObserverFactory(observer);
+
+            Context.Services.Add(new ServiceDescriptor(typeof(IResizeObserverFactory), factory));
+
+            var comp = Context.RenderComponent<ScrollableTabsRenderTest>();
+
+            var toolbarWrapper = comp.Find(".mud-tabs-tabbar-wrapper");
+
+            toolbarWrapper.Should().NotBeNull();
+
+            toolbarWrapper.HasAttribute("style").Should().Be(true);
+            var styleAttr = toolbarWrapper.GetAttribute("style");
+
+            styleAttr.Should().Be("transform:translateX(-300px);");
+        }
+
+        [Test]
         [TestCase(400.0, 100)]
         [TestCase(300.0, 100)]
         [TestCase(200.0, 200)]
