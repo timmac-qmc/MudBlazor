@@ -215,19 +215,22 @@ namespace MudBlazor.UnitTests.Components
             };
 
             var factory = new MockResizeObserverFactory(observer);
-
-            Context.Services.Add(new ServiceDescriptor(typeof(IResizeObserverFactory), factory));
+            Context.Services.AddTransient<IResizeObserverFactory>(_ => factory);
 
             var comp = Context.RenderComponent<ScrollableTabsRenderTest>();
 
             var toolbarWrapper = comp.Find(".mud-tabs-tabbar-wrapper");
+            var tabs = comp.FindAll(".mud-tab");
 
             toolbarWrapper.Should().NotBeNull();
+            tabs.Count.Should().Be(11);
+            // Tab index starts from zero
+            tabs[8].ClassList.Should().Contain("mud-tab-active");
 
             toolbarWrapper.HasAttribute("style").Should().Be(true);
             var styleAttr = toolbarWrapper.GetAttribute("style");
 
-            styleAttr.Should().Be("transform:translateX(-300px);");
+            styleAttr.Should().Be("transform:translateX(-800px);");
         }
 
         [Test]
